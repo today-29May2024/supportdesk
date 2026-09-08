@@ -13,7 +13,9 @@ Open your terminal or command prompt and navigate to the "**supportdesk-main**" 
 ``` dotnet run --project backend/SupportDesk.Api/SupportDesk.Api.csproj ```
 
 ### 3. Start the front-end
-Open another terminal or command prompt session and navigate to the "**supportdesk-main\frontend\support-desk-ui**" directory and type and enter the following command to start Angular front-end:
+Open another terminal or command prompt session and navigate to the "**supportdesk-main\frontend\support-desk-ui**" directory and type and enter the following commands to install the required node packages and start Angular front-end:
+
+``` npm install ```
 
 ``` ng serve ```
 
