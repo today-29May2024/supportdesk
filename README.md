@@ -24,7 +24,7 @@ For database setup, see section **C) 1. for assumptions made**.
 
 ## B) Where the business rules placed and why?
 
-The business rules or the program logic is sit inside the TicketServie.cs file under the Service folder of SupportDesk.Api project and reason to do that is to centralize the code in one place for easier lookup currently.
+The business rules or the program logic is sit inside the TicketService.cs file under the Service folder of SupportDesk.Api project and reason to do that is to centralize the code in one place for easier lookup currently.
 
 ## C) Assumptions made
 
