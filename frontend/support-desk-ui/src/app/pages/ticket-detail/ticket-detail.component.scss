@@ -1,0 +1,25 @@
+.page-container { padding: 30px; max-width: 1200px; margin: 0 auto; }
+.top-nav { margin-bottom: 16px; }
+.back-link { color: #0066cc; text-decoration: none; font-weight: 600; }
+
+.detail-header {
+  display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;
+  h2 { margin: 6px 0; font-size: 1.75rem; }
+  .ref-tag { background: #e9ecef; padding: 4px 8px; border-radius: 4px; font-weight: bold; }
+  .meta { color: #666; font-size: 0.875rem; margin: 0; }
+}
+
+.detail-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+.card { background: #fff; border: 1px solid #e0e0e0; border-radius: 6px; padding: 20px; margin-bottom: 20px; }
+.info-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.9rem; }
+
+.comment-item { border-bottom: 1px solid #eee; padding: 12px 0; }
+.comment-header { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; }
+.comment-date { color: #888; }
+
+.status-buttons { display: flex; flex-direction: column; gap: 8px; }
+.btn-outline { border: 1px solid #0066cc; color: #0066cc; background: transparent; padding: 8px; border-radius: 4px; font-weight: 600; cursor: pointer; }
+.btn-outline:hover { background: #f0f7ff; }
+
+.alert-warning { background: #fff3cd; color: #856404; padding: 12px; border-radius: 4px; margin-bottom: 20px; }
+.alert-danger { background: #f8d7da; color: #721c24; padding: 12px; border-radius: 4px; margin-bottom: 20px; }

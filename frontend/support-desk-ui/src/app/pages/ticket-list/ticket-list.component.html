@@ -1,0 +1,119 @@
+<div class="page-container">
+  <div class="header-action-bar">
+    <div>
+      <h2>Support Desk Tickets</h2>
+      <p class="subtitle">Track and resolve customer requests</p>
+    </div>
+    <button class="btn btn-primary" (click)="openCreateModal()">+ Create Ticket</button>
+  </div>
+
+  <!-- Filter & Search Section -->
+  <div class="filter-card">
+    <div class="filter-grid">
+      <div class="form-group">
+        <label>Search</label>
+        <input type="text" [formControl]="searchControl" placeholder="Ref, Title, Customer..." />
+      </div>
+
+      <div class="form-group">
+        <label>Status</label>
+        <select [(ngModel)]="filters.status" (change)="onFilterChange()">
+          <option value="">All Statuses</option>
+          <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Priority</label>
+        <select [(ngModel)]="filters.priority" (change)="onFilterChange()">
+          <option value="">All Priorities</option>
+          <option *ngFor="let p of priorities" [value]="p">{{ p }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Assigned Agent</label>
+        <select [(ngModel)]="filters.assignedAgentId" (change)="onFilterChange()">
+          <option value="">All Agents</option>
+          <option *ngFor="let a of agents" [value]="a.id">{{ a.fullName }}</option>
+        </select>
+      </div>
+
+      <div class="form-group checkbox-group">
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="filters.overdueOnly" (change)="onFilterChange()" />
+          Overdue Only
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading & Empty States -->
+  <div class="loading-state" *ngIf="loading">
+    <div class="spinner"></div> Loading tickets...
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && tickets.length === 0">
+    <p>No tickets found matching your criteria.</p>
+  </div>
+
+  <!-- Tickets Table -->
+  <div class="table-container" *ngIf="!loading && tickets.length > 0">
+    <table class="tickets-table">
+      <thead>
+        <tr>
+          <th>Reference</th>
+          <th>Title</th>
+          <th>Customer</th>
+          <th>Priority</th>
+          <th>Status</th>
+          <th>Assigned Agent</th>
+          <th>Due Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let t of tickets" [class.overdue-row]="t.isOverdue">
+          <td class="font-mono">
+            <strong>{{ t.reference }}</strong>
+          </td>
+          <td>{{ t.title }}</td>
+          <td>{{ t.customerName }}</td>
+          <td>
+            <!-- <span class="badge priority-{{ t.priority.toLowerCase() }}">{{ t.priority }}</span> -->
+            <span class="badge priority-{{ ticketPriorityMap[toInt(t.priority)].toLowerCase() }}">{{ ticketPriorityMap[toInt(t.priority)] }}</span>
+          </td>
+          <td>
+            <!-- <span class="badge status-{{ t.status.toLowerCase() }}">{{ t.status }}</span> -->
+            <span class="badge status-{{ ticketStatusMap[toInt(t.status)].toLowerCase() }}">{{ ticketStatusMap[toInt(t.status)] }}</span>
+          </td>
+          <td>{{ t.assignedAgentName || 'Unassigned' }}</td>
+          <td>
+            {{ t.dueDate | date:'medium' }}
+            <span class="overdue-tag" *ngIf="t.isOverdue">OVERDUE</span>
+          </td>
+          <td>
+            <a [routerLink]="['/tickets', t.id]" class="btn-link">View Detail</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Pagination Controls -->
+    <div class="pagination-bar">
+      <span>Showing {{ tickets.length }} of {{ totalCount }} tickets</span>
+      <div class="pagination-buttons">
+        <button [disabled]="filters.page === 1" (click)="onPageChange(filters.page! - 1)">&laquo; Prev</button>
+        <span>Page {{ filters.page }} of {{ totalPages || 1 }}</span>
+        <button [disabled]="filters.page === totalPages || totalPages === 0" (click)="onPageChange(filters.page! + 1)">Next &raquo;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-ticket-form-dialog
+  [isOpen]="isCreateModalOpen"
+  [serverError]="createError"
+  (closeDialog)="isCreateModalOpen = false"
+  (submitForm)="handleCreateTicket($event)">
+</app-ticket-form-dialog>

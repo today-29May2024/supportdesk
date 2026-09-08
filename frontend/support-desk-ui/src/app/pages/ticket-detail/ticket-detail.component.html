@@ -1,0 +1,129 @@
+<div class="page-container" *ngIf="ticket">
+  <div class="top-nav">
+    <a routerLink="/tickets" class="back-link">&larr; Back to Tickets</a>
+  </div>
+
+  <div class="alert alert-danger" *ngIf="actionError">
+    {{ actionError }}
+  </div>
+
+  <!-- Read-Only Banner for Closed Tickets -->
+  <div class="alert alert-warning" *ngIf="ticket.status === TicketStatus.Closed">
+    <strong>Closed Ticket:</strong> This ticket is read-only. No further edits, status transitions, or comments are allowed.
+  </div>
+
+  <div class="detail-header">
+    <div>
+      <span class="font-mono ref-tag">{{ ticket.reference }}</span>
+      <h2>{{ ticket.title }}</h2>
+      <p class="meta">Created by {{ ticket.customerName }} ({{ ticket.customerEmail }}) on {{ ticket.createdDate | date:'medium' }}</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-danger" *ngIf="ticket.status !== TicketStatus.Closed" (click)="handleDeleteTicket()">Delete Ticket</button>
+    </div>
+  </div>
+
+  <div class="detail-grid">
+    <!-- Main Content Left Side -->
+    <div class="main-content">
+      <div class="card">
+        <h3>Description</h3>
+        <p class="description-text">{{ ticket.description }}</p>
+      </div>
+
+      <!-- Comments Thread -->
+      <div class="card comments-section">
+        <h3>Comments ({{ ticket.comments.length }})</h3>
+
+        <div class="comments-list">
+          <div class="comment-item" *ngFor="let c of ticket.comments">
+            <div class="comment-header">
+              <strong>{{ c.authorName }}</strong>
+              <span class="comment-date">{{ c.createdDate | date:'medium' }}</span>
+            </div>
+            <p class="comment-body">{{ c.body }}</p>
+          </div>
+          <p *ngIf="ticket.comments.length === 0" class="no-comments">No comments posted yet.</p>
+        </div>
+
+        <!-- Add Comment Form -->
+        <form [formGroup]="commentForm" (ngSubmit)="handleAddComment()" class="add-comment-form" *ngIf="ticket.status !== TicketStatus.Closed">
+          <h4>Add Comment</h4>
+          <div class="form-group">
+            <input type="text" formControlName="authorName" placeholder="Your Name" />
+          </div>
+          <div class="form-group">
+            <textarea formControlName="body" rows="3" placeholder="Write a comment..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" [disabled]="commentForm.invalid">Post Comment</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Sidebar Workflow Management Right Side -->
+    <div class="sidebar">
+      <div class="card">
+        <h3>Ticket Details</h3>
+        
+        <div class="info-row">
+          <label>Status</label>
+          <span class="badge">{{ ticketStatusMap[toInt(ticket.status)] }}</span>
+        </div>
+
+        <div class="info-row">
+          <label>Priority</label>
+          <span class="badge">{{ ticketPriorityMap[toInt(ticket.priority)] }}</span>
+        </div>
+
+        <div class="info-row">
+          <label>SLA Due Date</label>
+          <div>
+            <span>{{ ticket.dueDate | date:'medium' }}</span>
+            <span class="overdue-tag" *ngIf="ticket.isOverdue">OVERDUE</span>
+          </div>
+        </div>
+
+        <div class="info-row" *ngIf="ticket.resolvedDate">
+          <label>Resolved Date</label>
+          <span>{{ ticket.resolvedDate | date:'medium' }}</span>
+        </div>
+
+        <div class="info-row" *ngIf="ticket.closedDate">
+          <label>Closed Date</label>
+          <span>{{ ticket.closedDate | date:'medium' }}</span>
+        </div>
+      </div>
+
+      <!-- Agent Assignment Panel -->
+      <div class="card" *ngIf="ticket.status !== TicketStatus.Closed">
+        <h3>Assigned Agent</h3>
+        <p><strong>Current:</strong> {{ ticket.assignedAgent?.fullName || 'Unassigned' }}</p>
+
+        <div class="agent-assign-box">
+          <select [(ngModel)]="selectedAgentId">
+            <option value="">Select Agent...</option>
+            <option *ngFor="let a of agents" [value]="a.id" [disabled]="!a.active">
+              {{ a.fullName }} {{ !a.active ? '(Inactive)' : '' }}
+            </option>
+          </select>
+          <button class="btn btn-secondary" (click)="handleAgentAssign()" [disabled]="!selectedAgentId">Assign</button>
+        </div>
+        <button class="btn btn-link-danger" *ngIf="ticket.assignedAgentId" (click)="handleAgentUnassign()">Unassign Agent</button>
+      </div>
+
+      <!-- Allowed Status Transition Panel -->
+      <div class="card" *ngIf="ticket.status !== TicketStatus.Closed">
+        <h3>Workflow Actions</h3>
+        <p class="subtitle">Allowed Transitions:</p>
+        <div class="status-buttons">
+          <button 
+            *ngFor="let s of allowedTransitions" 
+            class="btn btn-outline" 
+            (click)="handleStatusChange(s)">
+            Move to {{ s }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
