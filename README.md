@@ -8,12 +8,12 @@
 The backend and front-end of this small ticketing tool (not a complete application) is under one repository and because it is hosting on the GitHub, you can definitely clone it using git clone with the https url shown under local tab from the green 'Code' button dropdown or download the zip file for the source code. 
 
 ### 2. Start the backend
-Open your terminal or command prompt and navigate to the **supportdesk-main** directory and type and enter the following command to start the ASP.NET Web API backend:
+Open your terminal or command prompt and navigate to the "**supportdesk-main**" directory on where the .slnx or .gitignore file located and type and enter the following command to start the ASP.NET Web API backend:
 
 ``` dotnet run --project backend/SupportDesk.Api/SupportDesk.Api.csproj ```
 
 ### 3. Start the front-end
-Open another terminal or command prompt session and navigate to the **supportdesk-main\frontend\support-desk-ui** directory and type and enter the following command to start Angular front-end:
+Open another terminal or command prompt session and navigate to the "**supportdesk-main\frontend\support-desk-ui**" directory and type and enter the following command to start Angular front-end:
 
 ``` ng serve ```
 
